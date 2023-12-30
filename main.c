@@ -6,7 +6,7 @@
 /*   By: mateo <mateo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 15:12:48 by mateo             #+#    #+#             */
-/*   Updated: 2023/12/30 22:22:32 by mateo            ###   ########.fr       */
+/*   Updated: 2023/12/30 23:34:33 by mateo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,19 +79,38 @@ int ft_strlen(char *str)
 	return (i);
 }
 
-int	ft_atoi_flags(char *str)
+int	ft_atoi_width(char *str) // does not cater for negative int
 {
 	long long	r;
-	int			s;
 
-	s = 1;
 	r = 0;
 	while (ft_charinstr(*str, FLAGS))
 		str++;
 	while ((*str >= '0') && (*str <= '9'))
 	{
-		r = r * 10 + (*str - '0') * s;
+		r = r * 10 + (*str - '0');
 		str++;
+	}
+	return (r);
+}
+
+int	ft_atoi_precision(char *str) // does not cater for negative int
+{
+	long long	r;
+
+	r = 0;
+	while (ft_charinstr(*str, FLAGS))
+		str++;
+	while ((*str >= '0') && (*str <= '9'))
+		str++;
+	if (*str == '.')
+	{
+		str++;
+		while ((*str >= '0') && (*str <= '9'))
+		{
+			r = r * 10 + (*str - '0');
+		str++;
+		}
 	}
 	return (r);
 }
@@ -103,16 +122,15 @@ int ft_conv_c(char *word, int arg)
 	int	count;
 	
 	left = 0;
-	width = 1;
-	
 	while (ft_charinstr(*word, FLAGS))
 	{
 		if (*word == '-')
 			left = 1;
 		word++;
 	}
-	if (*word >= '0' && *word <= '9')
-		width = ft_atoi_flags(word);
+	width = ft_atoi_width(word);
+	if (width < 1)
+		width = 1;
 	count = width;
 	if (left == 1)
 	{
@@ -129,12 +147,51 @@ int ft_conv_c(char *word, int arg)
 	return (count);
 }
 
-// int ft_conv_s(char *word, char *arg)
-// {
-// 	(void)word;
-// 	write(1, arg, ft_strlen(arg));
-// 	return (ft_strlen(arg));
-// }
+int ft_conv_s(char *word, char *arg)
+{
+	int	left;
+	int	width;
+	int	precision;
+	int	count;
+	left = 0;
+	width = ft_atoi_width(word);
+	while (ft_charinstr(*word, FLAGS) || ft_charinstr(*word, "0123456789"))
+	{
+		if (*word == '-')
+			left = 1;
+		word++;
+	}
+	if (*word == '.')
+		precision = ft_atoi_precision(word);
+	else
+		precision = ft_strlen(arg);
+	if (precision > ft_strlen(arg))
+		precision = ft_strlen(arg);
+	if (width > precision)
+	{
+		count = width;
+		if (left == 1)
+		{
+			write(1, arg, precision);
+			width -= precision;
+			while (width--)
+				write(1, " ", 1);
+		}
+		else
+		{
+			width -= precision;
+			while (width--)
+				write(1, " ", 1);
+			write(1, arg, precision);
+		}
+	}
+	else
+	{
+		count = precision;
+		write(1, arg, precision);
+	}
+	return (count);
+}
 
 int	ft_print_conv(va_list va_ptr, char *word, int len)
 {
@@ -142,18 +199,24 @@ int	ft_print_conv(va_list va_ptr, char *word, int len)
 	
 	if (word[len - 1] == 'c')
 		count = ft_conv_c(word, va_arg(va_ptr, int));
-	else if (word[len - 1] == 's');
-		// count = ft_conv_s(word, va_arg(va_ptr, char *));
-	else if (word[len - 1] == 'p'); // need to remove ;
+	else if (word[len - 1] == 's')
+		count = ft_conv_s(word, va_arg(va_ptr, char *));
+	else if (word[len - 1] == 'p')
+	{
 		// count = ft_conv_p(word, va_arg(va_ptr, void *));
-	else if (word[len - 1] == 'd' || word[len - 1] == 'i'); // need to remove ;
-		// count = ft_conv_d(word, va_arg(va_ptr, int));
-	else if (word[len - 1] == 'u'); // need to remove ;
-		// count = ft_conv_u(word, va_arg(va_ptr, unsigned int));
-	else if (word[len - 1] == 'x'); // need to remove ;
-		// count = ft_conv_x(word, va_arg(va_ptr, unsigned int));
-	else if (word[len - 1] == 'X'); // need to remove ;
-		// count = ft_conv_X(word, va_arg(va_ptr, unsigned int));
+	}
+	else if (word[len - 1] == 'd' || word[len - 1] == 'i')
+	{	// count = ft_conv_d(word, va_arg(va_ptr, int));
+	}
+	else if (word[len - 1] == 'u')
+	{	// count = ft_conv_u(word, va_arg(va_ptr, unsigned int));
+	}
+	else if (word[len - 1] == 'x')
+	{	// count = ft_conv_x(word, va_arg(va_ptr, unsigned int));
+	}
+	else if (word[len - 1] == 'X')
+	{	// count = ft_conv_X(word, va_arg(va_ptr, unsigned int));
+	}
 	return (count);
 }
 
@@ -232,20 +295,52 @@ int	main(void)
 	int	r;
 	
 	// // Testing %c
-	// r = ft_printf("a %c", 'm');
-	// write(1, "\nreturn value: ", 15);
-	// ft_putnbr(r);
-	// write(1, "\n", 1);
-	// r = ft_printf("a %05c", 'm');
-	// write(1, "\nreturn value: ", 15);
-	// ft_putnbr(r);
-	// write(1, "\n", 1);
-	// r = ft_printf("a %-05c", 'm');
-	// write(1, "\nreturn value: ", 15);
-	// ft_putnbr(r);
-	// write(1, "\n", 1);
+	r = ft_printf("a %c.", 'm');
+	write(1, "\nreturn value: ", 15);
+	ft_putnbr(r);
+	write(1, "\n", 1);
+	r = ft_printf("a %0c.", 'm');
+	write(1, "\nreturn value: ", 15);
+	ft_putnbr(r);
+	write(1, "\n", 1);
+	r = ft_printf("a %05c.", 'm');
+	write(1, "\nreturn value: ", 15);
+	ft_putnbr(r);
+	write(1, "\n", 1);
+	r = ft_printf("a %-05c.", 'm');
+	write(1, "\nreturn value: ", 15);
+	ft_putnbr(r);
+	write(1, "\n", 1);
 	
-	
+	// Testing %s
+	r = ft_printf("a %s.", "abc");
+	write(1, "\nreturn value: ", 15);
+	ft_putnbr(r);
+	write(1, "\n", 1);
+	r = ft_printf("a %.2s.", "abc");
+	write(1, "\nreturn value: ", 15);
+	ft_putnbr(r);
+	write(1, "\n", 1);
+	r = ft_printf("a %3.2s.", "abc");
+	write(1, "\nreturn value: ", 15);
+	ft_putnbr(r);
+	write(1, "\n", 1);
+	r = ft_printf("a %-3.2s.", "abc");
+	write(1, "\nreturn value: ", 15);
+	ft_putnbr(r);
+	write(1, "\n", 1);
+	r = ft_printf("a %3.3s.", "abc");
+	write(1, "\nreturn value: ", 15);
+	ft_putnbr(r);
+	write(1, "\n", 1);
+	r = ft_printf("a %2.3s.", "abc");
+	write(1, "\nreturn value: ", 15);
+	ft_putnbr(r);
+	write(1, "\n", 1);
+	r = ft_printf("a %.5s.", "abc");
+	write(1, "\nreturn value: ", 15);
+	ft_putnbr(r);
+	write(1, "\n", 1);
 	
 	// printf("\nreturn value: %d\n", ft_printf("ab %  sabc", "123"));
 	// printf("\nreturn value: %d\n", ft_printf("ab %  zsabc", "123"));
