@@ -21,6 +21,20 @@
 # define CONVERSIONS "cspdiuxX"
 # define FLAGS "-+ #0"
 # define WIDTH "0123456789"
-# define PRECISION ".-0123456789"
+# define PRECISION "-0123456789"
+
+typedef struct s_conv
+{
+	int		left;
+	int		sign;
+	int		space;
+	int		hash;
+	int		zero;
+	int		width;
+	int		width_num;
+	int		precision;
+	int		precision_num;
+	char	spec;
+}				t_conv;
 
 #endif
