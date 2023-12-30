@@ -18,7 +18,7 @@
 # include <stdarg.h>
 # include <stdlib.h>
 
-# define CONVERSIONS "cspdiuxX%"
+# define CONVERSIONS "cspdiuxX"
 # define FLAGS "-+ #0"
 # define WIDTH "0123456789"
 # define PRECISION ".-0123456789"
