@@ -92,7 +92,7 @@ int	ft_conv_x(unsigned long long c, char *base16, int recursion)
 		count++;
 	}
 	if (c >= 16)
-		count +=ft_conv_x(c / 16, BASE16_SMALL, 1);
+		count +=ft_conv_x(c / 16, base16, 1);
 	write(1, &base16[c % 16], 1);
 	count++;
 	return (count);
@@ -137,7 +137,7 @@ int	ft_printconv(const char *str, va_list va_ptr)
 		count = ft_conv_u(va_arg(va_ptr, unsigned int));
 	else if (*str == 'x')
 		count = ft_conv_x(va_arg(va_ptr, unsigned int), BASE16_SMALL, 0);
-else if (*str == 'X')
+	else if (*str == 'X')
 		count = ft_conv_x(va_arg(va_ptr, unsigned int), BASE16_LARGE, 0);
 	return (count);
 }
