@@ -101,11 +101,9 @@ int	ft_conv_x(unsigned long long c, char *base16, int recursion)
 int	ft_conv_p(unsigned long long addr)
 {
 	unsigned long long	temp;
-	int					count;
 	int					i;
 
 	temp = addr;
-	count = 0;
 	i = 1;
 	while (temp / 16 != 0)
 	{
@@ -113,9 +111,9 @@ int	ft_conv_p(unsigned long long addr)
 		i++;
 	}
 	while (i++ < 16)
-		count += ft_conv_c('0');
-	count += ft_conv_x(addr, BASE16_SMALL, 0);
-	return (count);
+		ft_conv_c('0');
+	ft_conv_x(addr, BASE16_SMALL, 0);
+	return (16);
 }
 
 int	ft_printconv(const char *str, va_list va_ptr)
@@ -172,35 +170,35 @@ int	ft_printf(const char *str, ...)
 	return (count);
 }
 
-// #include <stdio.h>
-// #include <limits.h>
+#include <stdio.h>
+#include <limits.h>
 
-// int	main(void)
-// {
+int	main(void)
+{
 	
 
-// 	// char	*ptr;
-// 	// ptr = "abc";
-// 	// printf("\n%d\n", ft_printf("%p", ptr));
-// 	// printf("\n%d\n", printf("%p", ptr));
+	char	*ptr;
+	ptr = "abc";
+	printf("\n%d\n", ft_printf("%p", ptr));
+	printf("\n%d\n", printf("%p", ptr));
 
-// 	// printf("\n%d\n", ft_printf("%d", INT_MAX));
-// 	// printf("\n%d\n", printf("%d", INT_MAX));
-// 	// printf("\n%d\n", ft_printf("%d", INT_MIN));
-// 	// printf("\n%d\n", printf("%d", INT_MIN));
+	// printf("\n%d\n", ft_printf("%d", INT_MAX));
+	// printf("\n%d\n", printf("%d", INT_MAX));
+	// printf("\n%d\n", ft_printf("%d", INT_MIN));
+	// printf("\n%d\n", printf("%d", INT_MIN));
 
-// 	// printf("\n%d\n", ft_printf("%i", INT_MAX));
-// 	// printf("\n%d\n", printf("%i", INT_MAX));
-// 	// printf("\n%d\n", ft_printf("%i", INT_MIN));
-// 	// printf("\n%d\n", printf("%i", INT_MIN));
+	// printf("\n%d\n", ft_printf("%i", INT_MAX));
+	// printf("\n%d\n", printf("%i", INT_MAX));
+	// printf("\n%d\n", ft_printf("%i", INT_MIN));
+	// printf("\n%d\n", printf("%i", INT_MIN));
 
-// 	// printf("\n%d\n", ft_printf("%u", UINT_MAX));
-// 	// printf("\n%d\n", printf("%u", UINT_MAX));
+	// printf("\n%d\n", ft_printf("%u", UINT_MAX));
+	// printf("\n%d\n", printf("%u", UINT_MAX));
 	
-// 	// printf("\n%d\n", ft_printf("%x", UINT_MAX));
-// 	// printf("\n%d\n", printf("%x", UINT_MAX));
+	// printf("\n%d\n", ft_printf("%x", UINT_MAX));
+	// printf("\n%d\n", printf("%x", UINT_MAX));
 	
-// 	// printf("\n%d\n", ft_printf("%X", UINT_MAX));
-// 	// printf("\n%d\n", printf("%X", UINT_MAX));
+	// printf("\n%d\n", ft_printf("%X", UINT_MAX));
+	// printf("\n%d\n", printf("%X", UINT_MAX));
 	
-// }
+}
