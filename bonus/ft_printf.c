@@ -6,7 +6,7 @@
 /*   By: mateo <mateo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 15:12:48 by mateo             #+#    #+#             */
-/*   Updated: 2024/01/01 18:37:27 by mateo            ###   ########.fr       */
+/*   Updated: 2024/01/01 20:03:58 by mateo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,7 +262,7 @@ int	ft_conv_p(t_conv *conv, unsigned long long arg)
 	}
 	if (!(conv->prec) && !(conv->hash))
 		conv->prec_num = 16;
-	if (!(conv->prec) && (conv->hash))
+	if ((!(conv->prec) && (conv->hash)) || (conv->left))
 		conv->prec_num = 12;
 	if ((conv->prec) && (conv->prec_num < i))
 		conv->prec_num = i;
@@ -276,7 +276,12 @@ int	ft_conv_p(t_conv *conv, unsigned long long arg)
 	if (!(conv->left))
 	{
 		while (conv->width_num--)
-			count += ft_putchar_ret(' ');
+		{
+			if (conv->zero)
+				count += ft_putchar_ret('0');
+			else
+				count += ft_putchar_ret(' ');
+		}
 	}
 	if (conv->hash)
 	{
@@ -410,7 +415,7 @@ int	main(void)
 	// printf("\n%d\n", ft_printf("%2.3s", "abc"));
 	// printf("\n%d\n", ft_printf("%.5s", "abc"));
 	
-	// char *ptr = "abc";
+	char *ptr = "abc";
 	// printf("\n%d\n", ft_printf("%p", ptr));
 	// printf("\n%d\n", printf("%p", ptr));
 	// printf("\n%d\n", ft_printf("%.12p", ptr));
@@ -431,7 +436,13 @@ int	main(void)
 	// printf("\n%d\n", printf("%#16.15p", ptr));
 	// printf("\n%d\n", ft_printf("%#16p", ptr));
 	// printf("\n%d\n", printf("%#16p", ptr));
-	
+	// printf("\n%d\n", ft_printf("%020p", ptr));
+	// printf("\n%d\n", printf("%020p", ptr));
+	// printf("\n%d\n", ft_printf("%-020p.", ptr));
+	// printf("\n%d\n", printf("%-020p.", ptr));
+	// printf("\n%d\n", ft_printf("%-20p.", ptr));
+	// printf("\n%d\n", printf("%-20p.", ptr));
+
 	// printf("\n%d\n", ft_printf("%04d", 42));
 	// printf("\n%d\n", printf("%04d", 42));
 	// printf("\n%d\n", ft_printf("%-04d.", 42));
