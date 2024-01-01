@@ -22,6 +22,8 @@
 # define FLAGS "-+ #0"
 # define WIDTH "0123456789"
 # define PRECISION "-0123456789"
+# define BASE16_SMALL "0123456789abcdef"
+# define BASE16_LARGE "0123456789ABCDEF"
 
 typedef struct s_conv
 {

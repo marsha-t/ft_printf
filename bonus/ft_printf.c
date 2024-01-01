@@ -6,7 +6,7 @@
 /*   By: mateo <mateo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 15:12:48 by mateo             #+#    #+#             */
-/*   Updated: 2023/12/31 20:05:38 by mateo            ###   ########.fr       */
+/*   Updated: 2024/01/01 15:32:30 by mateo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,29 +182,64 @@ int	ft_conv_s(t_conv *conv, char *arg)
 	return (count);
 }
 
-void	ft_conv_p_addr(unsigned long long arg)
+int	ft_putchar_ret(int c)
+{
+	write(1, &c, 1);
+	return (1);
+}
+int	ft_puthex_ret(unsigned long long c, char *base16, int recursion)
+{
+	int	count;
+
+	count = 0;
+	if (c < 16 && recursion == 0)
+	{
+		write(1, "0", 1);
+		count++;
+	}
+	if (c >= 16)
+		count +=ft_puthex_ret(c / 16, base16, 1);
+	write(1, &base16[c % 16], 1);
+	count++;
+	return (count);
+}
+
+int	ft_conv_p(t_conv *conv, unsigned long long addr)
 {
 	unsigned long long	temp;
 	int					i;
+	int					count;
 
 	temp = addr;
+	count = 0;
 	i = 1;
 	while (temp / 16 != 0)
 	{
 		temp = temp / 16;
 		i++;
 	}
-	while (i++ < 16)
-		ft_conv_c('0');
-	ft_conv_x(addr, BASE16_SMALL, 0);
-	return (16);	
-}
-
-int	ft_conv_p(t_conv *conv, unsigned long long arg)
-{
-	int	count;
-	
-	count += ft_conv_p_addr(arg);
+	if (conv->width == 0 || conv->width_num < i)
+		conv->width_num = i;
+	if (conv->prec == 0)
+		conv->prec_num = 16;
+	if ((conv->prec == 1) && (conv->prec_num < i))
+		conv->prec_num = i;
+	if (conv->left == 1)
+	{
+		while (i++ < conv->prec_num)
+			count += ft_putchar_ret('0');
+		count += ft_puthex_ret(addr, BASE16_SMALL, 0);
+		while (conv->width_num > count)
+			count += ft_putchar_ret(' ');
+	}
+	if (conv->left == 0)
+	{
+		while (conv->width_num-- > conv->prec_num)
+			count += ft_putchar_ret(' ');
+		while (i++ < conv->prec_num)
+			count += ft_putchar_ret('0');
+		count += ft_puthex_ret(addr, BASE16_SMALL, 0);
+	}
 	return (count);
 }
 
@@ -277,8 +312,22 @@ int	main(void)
 	// printf("\n%d\n", ft_printf("%3.2s", "abc"));
 	// printf("\n%d\n", ft_printf("%-3.2s.", "abc"));
 	// printf("\n%d\n", ft_printf("%2.3s", "abc"));
-	printf("\n%d\n", ft_printf("%.5s", "abc"));
+	// printf("\n%d\n", ft_printf("%.5s", "abc"));
 	
-	
+	// char *ptr = "abc";
+	// printf("\n%d\n", ft_printf("%p", ptr));
+	// printf("\n%d\n", printf("%p", ptr));
+	// printf("\n%d\n", ft_printf("%.12p", ptr));
+	// printf("\n%d\n", printf("%.12p", ptr));
+	// printf("\n%d\n", ft_printf("%.13p", ptr));
+	// printf("\n%d\n", printf("%.13p", ptr));
+	// printf("\n%d\n", ft_printf("%.16p", ptr));
+	// printf("\n%d\n", printf("%.16p", ptr));
+	// printf("\n%d\n", ft_printf("%.18p", ptr));
+	// printf("\n%d\n", printf("%.18p", ptr));
+	// printf("\n%d\n", ft_printf("%20.18p", ptr));
+	// printf("\n%d\n", printf("%20.18p", ptr));
+	// printf("\n%d\n", ft_printf("%-20.18p", ptr));
+	// printf("\n%d\n", printf("%-20.18p", ptr));
 	
 }
