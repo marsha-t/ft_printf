@@ -6,7 +6,7 @@
 /*   By: mateo <mateo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 15:12:48 by mateo             #+#    #+#             */
-/*   Updated: 2024/01/01 20:03:58 by mateo            ###   ########.fr       */
+/*   Updated: 2024/01/01 21:32:40 by mateo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -305,6 +305,8 @@ int ft_conv_d(t_conv *conv, int arg)
 	int	temp;
 	int	i;
 	
+	if (arg == 0 && !(conv->prec_num))
+		return (0);
 	temp = arg;
 	count = 0;
 	i = 1;
@@ -313,27 +315,50 @@ int ft_conv_d(t_conv *conv, int arg)
 		temp /= 10;
 		i++;
 	}
-	if (conv->prec == 1)
-		conv->zero = 0; 
-	if (conv->width == 0 || conv->width_num < i)
-		conv->width_num = i;
-	if (conv->prec == 0 || ((conv->prec == 1) && (conv->prec_num < i)))
-		conv->prec_num = i;
-	if (conv->left == 1)
+	if (arg < 0)
 	{
+		i++;
+		conv->space = 0;
+		conv->sign = 0;
+	}
+	if ((!(conv->prec)) || ((conv->prec) && (conv->prec_num < i)))
+		conv->prec_num = i;
+	if ((!(conv->space) && !(conv->sign)) && (conv->width_num < conv->prec_num))
+		conv->width_num = conv->prec_num;
+	else if (((conv->space) || (conv->sign)) && (conv->width_num < (conv->prec_num + 1)))
+		conv->width_num = conv->prec_num + 1;
+	conv->width_num -= conv->prec_num;
+	if (conv->space || conv->sign)
+		conv->width_num -= 1;
+	
+	if (conv->left)
+	{
+		if (conv->space)
+			count += ft_putchar_ret(' ');
+		if (conv->sign)
+			count += ft_putchar_ret('+');
 		while (i++ < conv->prec_num)
 			count += ft_putchar_ret('0');
 		count += ft_putnbr_ret(arg);
-		while (conv->width_num > count)
+		while (conv->width_num--)
 			count += ft_putchar_ret(' ');
 	}
-	if (conv->left == 0)
+	else
 	{
-		while (conv->width_num-- > conv->prec_num)
-			if (conv->zero == 1)
-				count += ft_putchar_ret('0');
-			else
+		if (conv->space)
+			count += ft_putchar_ret(' ');
+		if (!(conv->zero))
+		{
+			while (conv->width_num--)
 				count += ft_putchar_ret(' ');
+		}
+		if (conv->sign)
+			count += ft_putchar_ret('+');
+		if (conv->zero)
+		{
+			while (conv->width_num--)		
+				count += ft_putchar_ret('0');
+		}
 		while (i++ < conv->prec_num)
 			count += ft_putchar_ret('0');
 		count += ft_putnbr_ret(arg);
@@ -341,6 +366,62 @@ int ft_conv_d(t_conv *conv, int arg)
 	return (count);
 }
 
+int	ft_conv_u(t_conv *conv, unsigned int arg)
+{
+	int	count;
+	int	temp;
+	int	i;
+	
+	if (arg == 0 && !(conv->prec_num))
+		return (0);
+	temp = arg;
+	count = 0;
+	i = 1;
+	while (temp / 10)
+	{
+		temp /= 10;
+		i++;
+	}
+	if ((!(conv->prec)) || ((conv->prec) && (conv->prec_num < i)))
+		conv->prec_num = i;
+	if ((!(conv->space)) && (conv->width_num < conv->prec_num))
+		conv->width_num = conv->prec_num;
+	else if ((conv->space) && (conv->width_num < (conv->prec_num + 1)))
+		conv->width_num = conv->prec_num + 1;
+	conv->width_num -= conv->prec_num;
+	if (conv->space)
+		conv->width_num -= 1;
+	
+	if (conv->left)
+	{
+		if (conv->space)
+			count += ft_putchar_ret(' ');
+		while (i++ < conv->prec_num)
+			count += ft_putchar_ret('0');
+		count += ft_putnbr_ret(arg);
+		while (conv->width_num--)
+			count += ft_putchar_ret(' ');
+	}
+	else
+	{
+		if (conv->space)
+			count += ft_putchar_ret(' ');
+		if (!(conv->zero))
+		{
+			while (conv->width_num--)
+				count += ft_putchar_ret(' ');
+		}
+		if (conv->zero)
+		{
+			while (conv->width_num--)		
+				count += ft_putchar_ret('0');
+		}
+		while (i++ < conv->prec_num)
+			count += ft_putchar_ret('0');
+		count += ft_putnbr_ret(arg);
+	}
+	return (count);
+}
 
 /*Function to redirect to indiv functions for specifier*/
 int	ft_conv_select(va_list va_ptr, t_conv *conv)
@@ -357,8 +438,8 @@ int	ft_conv_select(va_list va_ptr, t_conv *conv)
 		count = ft_conv_p(conv, va_arg(va_ptr, unsigned long long));
 	else if (conv->spec == 'd' || conv->spec == 'i')
 		count = ft_conv_d(conv, va_arg(va_ptr, int));
-	// else if (conv->spec == 'u')
-	// 	count = ft_conv_u(conv, va_arg(va_ptr, unsigned int));
+	else if (conv->spec == 'u')
+		count = ft_conv_u(conv, va_arg(va_ptr, unsigned int));
 	// else if (conv->spec == 'x')
 	// 	count = ft_conv_x(conv, va_arg(va_ptr, unsigned int), BASE16_SMALL, 0);
 	// else if (conv->spec == 'X')
@@ -415,7 +496,7 @@ int	main(void)
 	// printf("\n%d\n", ft_printf("%2.3s", "abc"));
 	// printf("\n%d\n", ft_printf("%.5s", "abc"));
 	
-	char *ptr = "abc";
+	// char *ptr = "abc";
 	// printf("\n%d\n", ft_printf("%p", ptr));
 	// printf("\n%d\n", printf("%p", ptr));
 	// printf("\n%d\n", ft_printf("%.12p", ptr));
@@ -443,10 +524,47 @@ int	main(void)
 	// printf("\n%d\n", ft_printf("%-20p.", ptr));
 	// printf("\n%d\n", printf("%-20p.", ptr));
 
+	// printf("\n%d\n", ft_printf("%03d", 42));
+	// printf("\n%d\n", printf("%03d", 42));
+	// printf("\n%d\n", ft_printf("%-03d", 42));
+	// printf("\n%d\n", printf("%-03d", 42));
+	// printf("\n%d\n", ft_printf("% d", 42));
+	// printf("\n%d\n", printf("% d", 42));
+	// printf("\n%d\n", ft_printf("% 3d", 42));
+	// printf("\n%d\n", printf("% 3d", 42));
+	printf("\n%d\n", ft_printf("%d", -42));
+	printf("\n%d\n", printf("%d", -42));
+	// printf("\n%d\n", ft_printf("% d", -42));
+	// printf("\n%d\n", printf("% d", -42));
+	// printf("\n%d\n", ft_printf("% -3d", 42));
+	// printf("\n%d\n", printf("% -3d", 42));
+	// printf("\n%d\n", ft_printf("%- 4d", 42));
+	// printf("\n%d\n", printf("%- 4d", 42));
+	// printf("\n%d\n", ft_printf("% 4d", 42));
+	// printf("\n%d\n", printf("% 4d", 42));
+	// printf("\n%d\n", ft_printf("%0 4d", 42));
+	// printf("\n%d\n", printf("%0 4d", 42));
+	// printf("\n%d\n", ft_printf("% 4.3d", 42));
+	// printf("\n%d\n", printf("% 4.3d", 42));
 	// printf("\n%d\n", ft_printf("%04d", 42));
 	// printf("\n%d\n", printf("%04d", 42));
-	// printf("\n%d\n", ft_printf("%-04d.", 42));
-	// printf("\n%d\n", printf("%-04d.", 42));
+	// printf("\n%d\n", ft_printf("%-04d", 42));
+	// printf("\n%d\n", printf("%-04d", 42));
+	// printf("\n%d\n", ft_printf("%.0d", 0));
+	// printf("\n%d\n", printf("%.0d", 0));
+	// printf("\n%d\n", ft_printf("%+0d", 42));
+	// printf("\n%d\n", printf("%+0d", 42));
+	// printf("\n%d\n", ft_printf("%+ d", 42));
+	// printf("\n%d\n", printf("%+ d", 42));
+	// printf("\n%d\n", ft_printf("%+05d", 42));
+	// printf("\n%d\n", printf("%+05d", 42));
+	// printf("\n%d\n", ft_printf("%+ 5d", 42));
+	// printf("\n%d\n", printf("%+ 5d", 42));
+	// printf("\n%d\n", ft_printf("%-+05d", 42));
+	// printf("\n%d\n", printf("%-+05d", 42));
+	// printf("\n%d\n", ft_printf("%-+ 5d", 42));
+	// printf("\n%d\n", printf("%-+ 5d", 42));
+	
 	// printf("\n%d\n", ft_printf("%-4d.", 42));
 	// printf("\n%d\n", printf("%-4d.", 42));
 	// printf("\n%d\n", ft_printf("%4d.", 42));
@@ -457,9 +575,5 @@ int	main(void)
 	// printf("\n%d\n", printf("%05.4d.", 42));
 	// printf("\n%d\n", ft_printf("%05.7d.", 42));
 	// printf("\n%d\n", printf("%05.7d.", 42));
-	// printf("\n%d\n", ft_printf("%.1d.", 422));
-	// printf("\n%d\n", printf("%.1d.", 422));
-	// printf("\n%d\n", ft_printf("%0.4d", 42));
-	// printf("\n%d\n", printf("%0.4d", 42));
 	
 }
