@@ -6,7 +6,7 @@
 /*   By: mateo <mateo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 15:12:48 by mateo             #+#    #+#             */
-/*   Updated: 2024/01/01 21:32:40 by mateo            ###   ########.fr       */
+/*   Updated: 2024/01/02 11:06:53 by mateo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,19 @@ int	ft_putnbr_ret(int n)
 	if (x >= 10)
 		count += ft_putnbr_ret(x / 10);
 	c = x % 10 + '0';
+	count += ft_putchar_ret(c);
+	return (count);
+}
+
+int	ft_putunbr_ret(unsigned int n)
+{
+	char				c;
+	int					count;
+	
+	count = 0;
+	if (n >= 10)
+		count += ft_putunbr_ret(n / 10);
+	c = n % 10 + '0';
 	count += ft_putchar_ret(c);
 	return (count);
 }
@@ -398,7 +411,7 @@ int	ft_conv_u(t_conv *conv, unsigned int arg)
 			count += ft_putchar_ret(' ');
 		while (i++ < conv->prec_num)
 			count += ft_putchar_ret('0');
-		count += ft_putnbr_ret(arg);
+		count += ft_putunbr_ret(arg);
 		while (conv->width_num--)
 			count += ft_putchar_ret(' ');
 	}
@@ -418,7 +431,7 @@ int	ft_conv_u(t_conv *conv, unsigned int arg)
 		}
 		while (i++ < conv->prec_num)
 			count += ft_putchar_ret('0');
-		count += ft_putnbr_ret(arg);
+		count += ft_putunbr_ret(arg);
 	}
 	return (count);
 }
@@ -482,6 +495,8 @@ int	ft_printf(const char *str, ...) // no str in assignment prototype //
 }
 
 #include <stdio.h>
+#include <limits.h>
+
 int	main(void)
 {
 	// printf("\n%d\n", ft_printf("%.%"));
@@ -532,8 +547,8 @@ int	main(void)
 	// printf("\n%d\n", printf("% d", 42));
 	// printf("\n%d\n", ft_printf("% 3d", 42));
 	// printf("\n%d\n", printf("% 3d", 42));
-	printf("\n%d\n", ft_printf("%d", -42));
-	printf("\n%d\n", printf("%d", -42));
+	// printf("\n%d\n", ft_printf("%d", -42));
+	// printf("\n%d\n", printf("%d", -42));
 	// printf("\n%d\n", ft_printf("% d", -42));
 	// printf("\n%d\n", printf("% d", -42));
 	// printf("\n%d\n", ft_printf("% -3d", 42));
@@ -564,7 +579,6 @@ int	main(void)
 	// printf("\n%d\n", printf("%-+05d", 42));
 	// printf("\n%d\n", ft_printf("%-+ 5d", 42));
 	// printf("\n%d\n", printf("%-+ 5d", 42));
-	
 	// printf("\n%d\n", ft_printf("%-4d.", 42));
 	// printf("\n%d\n", printf("%-4d.", 42));
 	// printf("\n%d\n", ft_printf("%4d.", 42));
@@ -575,5 +589,57 @@ int	main(void)
 	// printf("\n%d\n", printf("%05.4d.", 42));
 	// printf("\n%d\n", ft_printf("%05.7d.", 42));
 	// printf("\n%d\n", printf("%05.7d.", 42));
+	// printf("\n%d\n", ft_printf("%d.", INT_MIN));
+	// printf("\n%d\n", printf("%0d.", INT_MIN));
+	// printf("\n%d\n", ft_printf("%d.", INT_MAX));
+	// printf("\n%d\n", printf("%0d.", INT_MAX));
 	
+	// printf("\n%d\n", ft_printf("%u.", UINT_MAX));
+	// printf("\n%d\n", printf("%u.", UINT_MAX));
+	// printf("\n%d\n", ft_printf("%03u", 42));
+	// printf("\n%d\n", printf("%03u", 42));
+	// printf("\n%d\n", ft_printf("%-03u", 42));
+	// printf("\n%d\n", printf("%-03u", 42));
+	// printf("\n%d\n", ft_printf("% u", 42));
+	// printf("\n%d\n", printf("% u", 42));
+	// printf("\n%d\n", ft_printf("% 3u", 42));
+	// printf("\n%d\n", printf("% 3u", 42));
+	// printf("\n%d\n", ft_printf("%u", -42));
+	// printf("\n%d\n", printf("%u", -42));
+	// printf("\n%d\n", ft_printf("% u", -42));
+	// printf("\n%d\n", printf("% u", -42));
+	// printf("\n%d\n", ft_printf("% -3u", 42));
+	// printf("\n%d\n", printf("% -3u", 42));
+	// printf("\n%d\n", ft_printf("%- 4u", 42));
+	// printf("\n%d\n", printf("%- 4u", 42));
+	// printf("\n%d\n", ft_printf("% 4u", 42));
+	// printf("\n%d\n", printf("% 4u", 42));
+	// printf("\n%d\n", ft_printf("%0 4u", 42));
+	// printf("\n%d\n", printf("%0 4u", 42));
+	// printf("\n%d\n", ft_printf("% 4.3u", 42));
+	// printf("\n%d\n", printf("% 4.3u", 42));
+	// printf("\n%d\n", ft_printf("%04u", 42));
+	// printf("\n%d\n", printf("%04u", 42));
+	// printf("\n%d\n", ft_printf("%-04u", 42));
+	// printf("\n%d\n", printf("%-04u", 42));
+	// printf("\n%d\n", ft_printf("%.0u", 0));
+	// printf("\n%d\n", printf("%.0u", 0));
+	// printf("\n%d\n", ft_printf("%+0u", 42));
+	// printf("\n%d\n", printf("%+0u", 42));
+	// printf("\n%d\n", ft_printf("%+ u", 42)); // not the same becuase + doesn't work with %u
+	// printf("\n%d\n", printf("%+ u", 42));
+	// printf("\n%d\n", ft_printf("%+05u", 42));
+	// printf("\n%d\n", printf("%+05u", 42));
+	// printf("\n%d\n", ft_printf("%+ 5u", 42));
+	// printf("\n%d\n", printf("%+ 5u", 42));
+	// printf("\n%d\n", ft_printf("%-4u.", 42));
+	// printf("\n%d\n", printf("%-4u.", 42));
+	// printf("\n%d\n", ft_printf("%4u.", 42));
+	// printf("\n%d\n", printf("%4u.", 42));
+	// printf("\n%d\n", ft_printf("%5.4u.", 42));
+	// printf("\n%d\n", printf("%5.4u.", 42));
+	// printf("\n%d\n", ft_printf("%05.4u.", 42));
+	// printf("\n%d\n", printf("%05.4u.", 42));
+	// printf("\n%d\n", ft_printf("%05.7u.", 42));
+	// printf("\n%d\n", printf("%05.7u.", 42));
 }
