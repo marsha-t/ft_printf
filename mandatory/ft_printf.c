@@ -177,10 +177,10 @@ int	main(void)
 {
 	
 
-	char	*ptr;
-	ptr = "abc";
-	printf("\n%d\n", ft_printf("%p", ptr));
-	printf("\n%d\n", printf("%p", ptr));
+	// char	*ptr;
+	// ptr = "abc";
+	// printf("\n%d\n", ft_printf("%p", ptr));
+	// printf("\n%d\n", printf("%p", ptr));
 
 	// printf("\n%d\n", ft_printf("%d", INT_MAX));
 	// printf("\n%d\n", printf("%d", INT_MAX));
@@ -192,8 +192,8 @@ int	main(void)
 	// printf("\n%d\n", ft_printf("%i", INT_MIN));
 	// printf("\n%d\n", printf("%i", INT_MIN));
 
-	// printf("\n%d\n", ft_printf("%u", UINT_MAX));
-	// printf("\n%d\n", printf("%u", UINT_MAX));
+	printf("\n%d\n", ft_printf("%u", UINT_MAX));
+	printf("\n%d\n", printf("%u", UINT_MAX));
 	
 	// printf("\n%d\n", ft_printf("%x", UINT_MAX));
 	// printf("\n%d\n", printf("%x", UINT_MAX));
