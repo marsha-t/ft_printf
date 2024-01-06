@@ -28,8 +28,8 @@ int	ft_charinstr(char c, char *str)
 
 int	ft_printconv(const char *str, va_list va_ptr)
 {
-	int	count; 
-	
+	int	count;
+
 	count = 0;
 	if (*str == '%')
 		count = ft_conv_c('%');

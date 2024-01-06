@@ -1,0 +1,34 @@
+2a
+3
+ffffffff
+9
+0x2a
+5
+0002a
+6
+ffffffff
+9
+0xffffffff
+11
+ffffffff
+9
+0xffffffff
+11
+00000000ffffffff
+17
+0x00000000ffffffff
+19
+0002a
+6
+0x0002a
+8
+.   0x0002a.
+13
+.0x0002a   .
+13
+.   2a.
+8
+.2a   .
+8
+.0002a.
+8

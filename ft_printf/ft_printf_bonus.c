@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*   ft_printf_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateo <mateo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mateo <mateo@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 15:12:48 by mateo             #+#    #+#             */
-/*   Updated: 2024/01/02 11:06:53 by mateo            ###   ########.fr       */
+/*   Updated: 2024/01/05 18:08:55 by mateo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "ft_printf_bonus.h"
 #include <stdio.h>
 
 /* Temporary function to print conversion to make debugging easier*/
@@ -18,6 +18,17 @@ void	ft_print_conv(t_conv *conv)
 {
 	printf("left: %d\nsign: %d\nspace: %d\nhash: %d\nzero: %d\nwidth: %d\nwidth_num: %d\nprec: %d\nprec_num: %d\nspec: %d\n", \
 	conv->left, conv->sign, conv->space, conv->hash, conv->zero, conv->width, conv->width_num, conv->prec, conv->prec_num, conv->spec);
+}
+
+/* amended libft.a functions*/
+int	ft_strlen(const char *s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i] != '\0')
+		i++;
+	return (i);
 }
 
 /* libft.a functions*/
@@ -50,16 +61,6 @@ int	ft_atoi(const char *str)
 	return (r);
 }
 
-size_t	ft_strlen(const char *s)
-{
-	size_t	i;
-
-	i = 0;
-	while (s[i] != '\0')
-		i++;
-	return (i);
-}
-
 /* Misc utility functions*/
 int	ft_charinstr(char c, char *str)
 {
@@ -87,18 +88,13 @@ int	ft_putchar_ret(int c)
 	return (1);
 }
 
-int	ft_puthex_ret(unsigned long long c, char *base16, int recursion)
+int	ft_puthex_ret(unsigned long long c, char *base16)
 {
 	int	count;
 
 	count = 0;
-	if (c < 16 && recursion == 0)
-	{
-		write(1, "0", 1);
-		count++;
-	}
 	if (c >= 16)
-		count +=ft_puthex_ret(c / 16, base16, 1);
+		count +=ft_puthex_ret(c / 16, base16);
 	write(1, &base16[c % 16], 1);
 	count++;
 	return (count);
@@ -267,43 +263,23 @@ int	ft_conv_p(t_conv *conv, unsigned long long arg)
 
 	temp = arg;
 	count = 0;
-	i = 1;
+	i = 3;
 	while (temp / 16 != 0)
 	{
 		temp = temp / 16;
 		i++;
 	}
-	if (!(conv->prec) && !(conv->hash))
-		conv->prec_num = 16;
-	if ((!(conv->prec) && (conv->hash)) || (conv->left))
-		conv->prec_num = 12;
-	if ((conv->prec) && (conv->prec_num < i))
-		conv->prec_num = i;
-	if (!(conv->hash) && conv->width_num < conv->prec_num)
-		conv->width_num = conv->prec_num;
-	else if ((conv->hash) && (conv->width_num < (conv->prec_num + 2)))
-		conv->width_num = conv->prec_num + 2;
-	conv->width_num -= conv->prec_num;
-	if (conv->hash)
-		conv->width_num -= 2;
+	if (conv->width_num < i)
+		conv->width_num = i;
+	conv->width_num -= i;
 	if (!(conv->left))
 	{
 		while (conv->width_num--)
-		{
-			if (conv->zero)
-				count += ft_putchar_ret('0');
-			else
-				count += ft_putchar_ret(' ');
-		}
+			count += ft_putchar_ret(' ');
 	}
-	if (conv->hash)
-	{
-		count += ft_putchar_ret('0');
-		count += ft_putchar_ret('x');
-	}
-	while (i++ < conv->prec_num)
-		count += ft_putchar_ret('0');
-	count += ft_puthex_ret(arg, BASE16_SMALL, 0);
+	count += ft_putchar_ret('0');
+	count += ft_putchar_ret('x');
+	count += ft_puthex_ret(arg, BASE16_SMALL);
 	if (conv->left)
 	{
 		while (conv->width_num--)
@@ -436,11 +412,13 @@ int	ft_conv_u(t_conv *conv, unsigned int arg)
 	return (count);
 }
 
+
 /*Function to redirect to indiv functions for specifier*/
 int	ft_conv_select(va_list va_ptr, t_conv *conv)
 {
 	int	count;
 	
+	count = 0;
 	if (conv->spec == '%')
 		count = ft_conv_pct(conv);
 	else if (conv->spec == 'c')
@@ -454,9 +432,9 @@ int	ft_conv_select(va_list va_ptr, t_conv *conv)
 	else if (conv->spec == 'u')
 		count = ft_conv_u(conv, va_arg(va_ptr, unsigned int));
 	// else if (conv->spec == 'x')
-	// 	count = ft_conv_x(conv, va_arg(va_ptr, unsigned int), BASE16_SMALL, 0);
+	// 	count = ft_conv_x(conv, va_arg(va_ptr, unsigned int), BASE16_SMALL);
 	// else if (conv->spec == 'X')
-	// 	count = ft_conv_x(conv, va_arg(va_ptr, unsigned int), BASE16_LARGE, 0);
+	// 	count = ft_conv_x(conv, va_arg(va_ptr, unsigned int), BASE16_LARGE);
 	return (count);
 }
 
@@ -494,152 +472,3 @@ int	ft_printf(const char *str, ...) // no str in assignment prototype //
 	return (count);
 }
 
-#include <stdio.h>
-#include <limits.h>
-
-int	main(void)
-{
-	// printf("\n%d\n", ft_printf("%.%"));
-	// printf("\n%d\n", ft_printf("%#%"));
-	
-	// printf("\n%d\n", ft_printf("%2.2c", 'a'));
-	
-	// printf("\n%d\n", ft_printf("%s", "abc"));
-	// printf("\n%d\n", ft_printf("%.2s", "abc"));
-	// printf("\n%d\n", ft_printf("%3.2s", "abc"));
-	// printf("\n%d\n", ft_printf("%-3.2s.", "abc"));
-	// printf("\n%d\n", ft_printf("%2.3s", "abc"));
-	// printf("\n%d\n", ft_printf("%.5s", "abc"));
-	
-	// char *ptr = "abc";
-	// printf("\n%d\n", ft_printf("%p", ptr));
-	// printf("\n%d\n", printf("%p", ptr));
-	// printf("\n%d\n", ft_printf("%.12p", ptr));
-	// printf("\n%d\n", printf("%.12p", ptr));
-	// printf("\n%d\n", ft_printf("%.13p", ptr));
-	// printf("\n%d\n", printf("%.13p", ptr));
-	// printf("\n%d\n", ft_printf("%.16p", ptr));
-	// printf("\n%d\n", printf("%.16p", ptr));
-	// printf("\n%d\n", ft_printf("%.18p", ptr));
-	// printf("\n%d\n", printf("%.18p", ptr));
-	// printf("\n%d\n", ft_printf("%20.18p", ptr));
-	// printf("\n%d\n", printf("%20.18p", ptr));
-	// printf("\n%d\n", ft_printf("%-20.18p", ptr));
-	// printf("\n%d\n", printf("%-20.18p", ptr));
-	// printf("\n%d\n", ft_printf("%#16.12p", ptr));
-	// printf("\n%d\n", printf("%#16.12p", ptr));
-	// printf("\n%d\n", ft_printf("%#16.15p", ptr));
-	// printf("\n%d\n", printf("%#16.15p", ptr));
-	// printf("\n%d\n", ft_printf("%#16p", ptr));
-	// printf("\n%d\n", printf("%#16p", ptr));
-	// printf("\n%d\n", ft_printf("%020p", ptr));
-	// printf("\n%d\n", printf("%020p", ptr));
-	// printf("\n%d\n", ft_printf("%-020p.", ptr));
-	// printf("\n%d\n", printf("%-020p.", ptr));
-	// printf("\n%d\n", ft_printf("%-20p.", ptr));
-	// printf("\n%d\n", printf("%-20p.", ptr));
-
-	// printf("\n%d\n", ft_printf("%03d", 42));
-	// printf("\n%d\n", printf("%03d", 42));
-	// printf("\n%d\n", ft_printf("%-03d", 42));
-	// printf("\n%d\n", printf("%-03d", 42));
-	// printf("\n%d\n", ft_printf("% d", 42));
-	// printf("\n%d\n", printf("% d", 42));
-	// printf("\n%d\n", ft_printf("% 3d", 42));
-	// printf("\n%d\n", printf("% 3d", 42));
-	// printf("\n%d\n", ft_printf("%d", -42));
-	// printf("\n%d\n", printf("%d", -42));
-	// printf("\n%d\n", ft_printf("% d", -42));
-	// printf("\n%d\n", printf("% d", -42));
-	// printf("\n%d\n", ft_printf("% -3d", 42));
-	// printf("\n%d\n", printf("% -3d", 42));
-	// printf("\n%d\n", ft_printf("%- 4d", 42));
-	// printf("\n%d\n", printf("%- 4d", 42));
-	// printf("\n%d\n", ft_printf("% 4d", 42));
-	// printf("\n%d\n", printf("% 4d", 42));
-	// printf("\n%d\n", ft_printf("%0 4d", 42));
-	// printf("\n%d\n", printf("%0 4d", 42));
-	// printf("\n%d\n", ft_printf("% 4.3d", 42));
-	// printf("\n%d\n", printf("% 4.3d", 42));
-	// printf("\n%d\n", ft_printf("%04d", 42));
-	// printf("\n%d\n", printf("%04d", 42));
-	// printf("\n%d\n", ft_printf("%-04d", 42));
-	// printf("\n%d\n", printf("%-04d", 42));
-	// printf("\n%d\n", ft_printf("%.0d", 0));
-	// printf("\n%d\n", printf("%.0d", 0));
-	// printf("\n%d\n", ft_printf("%+0d", 42));
-	// printf("\n%d\n", printf("%+0d", 42));
-	// printf("\n%d\n", ft_printf("%+ d", 42));
-	// printf("\n%d\n", printf("%+ d", 42));
-	// printf("\n%d\n", ft_printf("%+05d", 42));
-	// printf("\n%d\n", printf("%+05d", 42));
-	// printf("\n%d\n", ft_printf("%+ 5d", 42));
-	// printf("\n%d\n", printf("%+ 5d", 42));
-	// printf("\n%d\n", ft_printf("%-+05d", 42));
-	// printf("\n%d\n", printf("%-+05d", 42));
-	// printf("\n%d\n", ft_printf("%-+ 5d", 42));
-	// printf("\n%d\n", printf("%-+ 5d", 42));
-	// printf("\n%d\n", ft_printf("%-4d.", 42));
-	// printf("\n%d\n", printf("%-4d.", 42));
-	// printf("\n%d\n", ft_printf("%4d.", 42));
-	// printf("\n%d\n", printf("%4d.", 42));
-	// printf("\n%d\n", ft_printf("%5.4d.", 42));
-	// printf("\n%d\n", printf("%5.4d.", 42));
-	// printf("\n%d\n", ft_printf("%05.4d.", 42));
-	// printf("\n%d\n", printf("%05.4d.", 42));
-	// printf("\n%d\n", ft_printf("%05.7d.", 42));
-	// printf("\n%d\n", printf("%05.7d.", 42));
-	// printf("\n%d\n", ft_printf("%d.", INT_MIN));
-	// printf("\n%d\n", printf("%0d.", INT_MIN));
-	// printf("\n%d\n", ft_printf("%d.", INT_MAX));
-	// printf("\n%d\n", printf("%0d.", INT_MAX));
-	
-	// printf("\n%d\n", ft_printf("%u.", UINT_MAX));
-	// printf("\n%d\n", printf("%u.", UINT_MAX));
-	// printf("\n%d\n", ft_printf("%03u", 42));
-	// printf("\n%d\n", printf("%03u", 42));
-	// printf("\n%d\n", ft_printf("%-03u", 42));
-	// printf("\n%d\n", printf("%-03u", 42));
-	// printf("\n%d\n", ft_printf("% u", 42));
-	// printf("\n%d\n", printf("% u", 42));
-	// printf("\n%d\n", ft_printf("% 3u", 42));
-	// printf("\n%d\n", printf("% 3u", 42));
-	// printf("\n%d\n", ft_printf("%u", -42));
-	// printf("\n%d\n", printf("%u", -42));
-	// printf("\n%d\n", ft_printf("% u", -42));
-	// printf("\n%d\n", printf("% u", -42));
-	// printf("\n%d\n", ft_printf("% -3u", 42));
-	// printf("\n%d\n", printf("% -3u", 42));
-	// printf("\n%d\n", ft_printf("%- 4u", 42));
-	// printf("\n%d\n", printf("%- 4u", 42));
-	// printf("\n%d\n", ft_printf("% 4u", 42));
-	// printf("\n%d\n", printf("% 4u", 42));
-	// printf("\n%d\n", ft_printf("%0 4u", 42));
-	// printf("\n%d\n", printf("%0 4u", 42));
-	// printf("\n%d\n", ft_printf("% 4.3u", 42));
-	// printf("\n%d\n", printf("% 4.3u", 42));
-	// printf("\n%d\n", ft_printf("%04u", 42));
-	// printf("\n%d\n", printf("%04u", 42));
-	// printf("\n%d\n", ft_printf("%-04u", 42));
-	// printf("\n%d\n", printf("%-04u", 42));
-	// printf("\n%d\n", ft_printf("%.0u", 0));
-	// printf("\n%d\n", printf("%.0u", 0));
-	// printf("\n%d\n", ft_printf("%+0u", 42));
-	// printf("\n%d\n", printf("%+0u", 42));
-	// printf("\n%d\n", ft_printf("%+ u", 42)); // not the same becuase + doesn't work with %u
-	// printf("\n%d\n", printf("%+ u", 42));
-	// printf("\n%d\n", ft_printf("%+05u", 42));
-	// printf("\n%d\n", printf("%+05u", 42));
-	// printf("\n%d\n", ft_printf("%+ 5u", 42));
-	// printf("\n%d\n", printf("%+ 5u", 42));
-	// printf("\n%d\n", ft_printf("%-4u.", 42));
-	// printf("\n%d\n", printf("%-4u.", 42));
-	// printf("\n%d\n", ft_printf("%4u.", 42));
-	// printf("\n%d\n", printf("%4u.", 42));
-	// printf("\n%d\n", ft_printf("%5.4u.", 42));
-	// printf("\n%d\n", printf("%5.4u.", 42));
-	// printf("\n%d\n", ft_printf("%05.4u.", 42));
-	// printf("\n%d\n", printf("%05.4u.", 42));
-	// printf("\n%d\n", ft_printf("%05.7u.", 42));
-	// printf("\n%d\n", printf("%05.7u.", 42));
-}

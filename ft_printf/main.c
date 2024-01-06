@@ -16,12 +16,21 @@
 
 int	main(void)
 {
+// 	printf("\n%d\n", ft_printf("%s", (char *)0));
+// 	printf("\n%d\n", printf("%s", (char *)0));
+
 	// printf("\n%d\n", ft_printf("%p", (void *)-1));
 	// printf("\n%d\n", printf("%p", (void *)-1));
 	// printf("\n%d\n", ft_printf("%p", (void *)1));
 	// printf("\n%d\n", printf("%p", (void *)1));
-	printf("\n%d\n", ft_printf("%p", (void *)0));
-	printf("\n%d\n", printf("%p", (void *)0));
+	// printf("\n%d\n", ft_printf("%p", (void *)0));
+	// printf("\n%d\n", printf("%p", (void *)0));
+
+	// printf("\n%d\n", ft_printf("%p", (void *)LONG_MAX + 423856));
+	// printf("\n%d\n", printf("%p", (void *)LONG_MAX + 423856));
+
+	printf("\n%d\n", ft_printf("%p", (void *)INT_MAX));
+	printf("\n%d\n", printf("%p", (void *)INT_MAX));
 
 	// char	*ptr;
 	// ptr = "abc";

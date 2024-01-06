@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
+#ifndef FT_PRINTF_BONUS_H
 
-# define LIBFT_H
+# define FT_PRINTF_BONUS_H
 
 # include <unistd.h>
 # include <stdarg.h>
@@ -38,5 +38,7 @@ typedef struct s_conv
 	int		prec_num;
 	char	spec;
 }				t_conv;
+
+int	ft_printf(const char *str, ...);
 
 #endif
