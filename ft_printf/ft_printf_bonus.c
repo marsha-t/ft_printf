@@ -6,7 +6,7 @@
 /*   By: mateo <mateo@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 15:12:48 by mateo             #+#    #+#             */
-/*   Updated: 2024/01/05 18:08:55 by mateo            ###   ########.fr       */
+/*   Updated: 2024/01/07 12:50:34 by mateo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,7 +319,6 @@ int ft_conv_d(t_conv *conv, int arg)
 	conv->width_num -= conv->prec_num;
 	if (conv->space || conv->sign)
 		conv->width_num -= 1;
-	
 	if (conv->left)
 	{
 		if (conv->space)
@@ -431,8 +430,8 @@ int	ft_conv_select(va_list va_ptr, t_conv *conv)
 		count = ft_conv_d(conv, va_arg(va_ptr, int));
 	else if (conv->spec == 'u')
 		count = ft_conv_u(conv, va_arg(va_ptr, unsigned int));
-	// else if (conv->spec == 'x')
-	// 	count = ft_conv_x(conv, va_arg(va_ptr, unsigned int), BASE16_SMALL);
+	else if (conv->spec == 'x')
+		count = ft_conv_x(conv, va_arg(va_ptr, unsigned int), BASE16_SMALL);
 	// else if (conv->spec == 'X')
 	// 	count = ft_conv_x(conv, va_arg(va_ptr, unsigned int), BASE16_LARGE);
 	return (count);
