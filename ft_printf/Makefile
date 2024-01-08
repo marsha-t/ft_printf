@@ -8,7 +8,7 @@ BONUS_OFILES = ${BONUS_CFILES:.c=.o}
 all: $(NAME)
 
 %o: %c 
-	gcc ${CFLAGS} -c $< -o ${<:.c=.o}
+	cc ${CFLAGS} -c $< -o ${<:.c=.o}
 
 $(NAME): fclean $(OFILES) 
 	ar rcs $(NAME) $(OFILES)

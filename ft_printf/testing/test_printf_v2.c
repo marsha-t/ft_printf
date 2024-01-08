@@ -6,7 +6,7 @@
 /*   By: mateo <mateo@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 15:20:56 by mateo             #+#    #+#             */
-/*   Updated: 2024/01/05 18:39:36 by mateo            ###   ########.fr       */
+/*   Updated: 2024/01/06 09:54:29 by mateo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,9 +86,9 @@ int	main(void)
 	// printf("% d.\n", 42); // sp added space 
 	// printf("% 3d.\n", 42); // sp counted in width
 	// printf("% d.\n", -42); // sp didnt have an effect since value is neg
-	// printf("%- 3d.\n", 42); // sp is always in front even with left
-	// printf("%- 4d.\n", 42); // sp is always in front even with left and additional padding is to the end
-	// printf("% 4d.\n", 42); // sp is always in front, together with additional padding
+	printf("%- 3d.\n", 42); // sp is always in front even with left
+	printf("%- 4d.\n", 42); // sp is always in front even with left and additional padding is to the end
+	printf("% 4d.\n", 42); // sp is always in front, together with additional padding
 	// printf("% 04d.\n", 42); // sp is always in front, together with additional padding
 	// printf("% 4.3d.\n", 42); // sp is always in front, together with additional padding
 	// printf("%.d\n", 42); // precision too small = ignored

@@ -18,10 +18,24 @@ int	main(void)
 {
 	char *ptr = "abc";
 	
-	printf("%d\n", ft_printf(".%15p.\n", ptr)); //  .    0x10dd02f96.
-	printf("%d\n", ft_printf(".%-15p.\n", ptr)); // .0x10dd02f96    .
+	printf("%d\n", printf(".%04x.\n", 9));
+	printf("%d\n", ft_printf(".%04x.\n", 9));
+
+	// printf("%d\n", printf("%04d\n", -14)); 
+	// printf("%d\n", ft_printf("%04d\n", -14)); 
+
+	// printf("%d\n", printf(".%-3u.\n", 1)); /////
+	// printf("%d\n", ft_printf(".%-3u.\n", 1)); /////
 	
+	// printf("%d\n", ft_printf(".%-15u.\n", 9223372036854775807LL)); /////
+	// printf("%d\n", printf(".%-15u.\n", 9223372036854775807LL)); /////
+
 	
+	// printf("%d\n", ft_printf(".%-4u.\n",-14)); /////
+	// printf("%d\n", printf(".%-4u.\n", -14)); /////
+
+	// printf("%d\n", printf("%-13d\n", UINT_MAX)); /////
+	// printf("%d\n", ft_printf("%-13d\n", UINT_MAX)); /////
 	// printf("\n%d\n", ft_printf("%.%"));
 	// printf("\n%d\n", ft_printf("%#%"));
 	

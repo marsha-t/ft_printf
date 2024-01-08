@@ -6,7 +6,7 @@
 /*   By: mateo <mateo@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 15:12:48 by mateo             #+#    #+#             */
-/*   Updated: 2024/01/07 12:50:34 by mateo            ###   ########.fr       */
+/*   Updated: 2024/01/07 16:47:33 by mateo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int	ft_puthex_ret(unsigned long long c, char *base16)
 	return (count);
 }
 
-int	ft_putnbr_ret(int n)
+int	ft_putnbr_ret(long n)
 {
 	char		c;
 	long long	x;
@@ -234,8 +234,10 @@ int	ft_conv_s(t_conv *conv, char *arg)
 {
 	int	count;
 	
-	if ((conv->prec_num == 0) || (conv->prec == 1 && conv->prec_num > ft_strlen(arg)))
+	if ((conv->prec == 0) || (conv->prec == 1 && conv->prec_num > ft_strlen(arg)))
+	{
 		conv->prec_num = ft_strlen(arg);
+	}
 	if (conv->width_num > conv->prec_num)
 	{
 		count = conv->width_num;
@@ -291,26 +293,28 @@ int	ft_conv_p(t_conv *conv, unsigned long long arg)
 int ft_conv_d(t_conv *conv, int arg)
 {
 	int	count;
-	int	temp;
+	long long	temp;
 	int	i;
-	
-	if (arg == 0 && !(conv->prec_num))
+
+	if (arg == 0 && (conv->prec) && !(conv->prec_num))
 		return (0);
 	temp = arg;
 	count = 0;
 	i = 1;
+	
 	while (temp / 10)
 	{
 		temp /= 10;
-		i++;
+		i++;	
 	}
+	temp = arg;
 	if (arg < 0)
 	{
-		i++;
+		temp *= -1;
 		conv->space = 0;
-		conv->sign = 0;
+		conv->sign = 1;
 	}
-	if ((!(conv->prec)) || ((conv->prec) && (conv->prec_num < i)))
+	if (conv->prec_num < i)
 		conv->prec_num = i;
 	if ((!(conv->space) && !(conv->sign)) && (conv->width_num < conv->prec_num))
 		conv->width_num = conv->prec_num;
@@ -323,11 +327,13 @@ int ft_conv_d(t_conv *conv, int arg)
 	{
 		if (conv->space)
 			count += ft_putchar_ret(' ');
-		if (conv->sign)
+		if (conv->sign && arg >= 0)
 			count += ft_putchar_ret('+');
+		if (conv->sign && arg < 0)
+			count += ft_putchar_ret('-');
 		while (i++ < conv->prec_num)
 			count += ft_putchar_ret('0');
-		count += ft_putnbr_ret(arg);
+		count += ft_putnbr_ret(temp);
 		while (conv->width_num--)
 			count += ft_putchar_ret(' ');
 	}
@@ -340,8 +346,10 @@ int ft_conv_d(t_conv *conv, int arg)
 			while (conv->width_num--)
 				count += ft_putchar_ret(' ');
 		}
-		if (conv->sign)
+		if (conv->sign && arg >= 0)
 			count += ft_putchar_ret('+');
+		if (conv->sign && arg < 0)
+			count += ft_putchar_ret('-');
 		if (conv->zero)
 		{
 			while (conv->width_num--)		
@@ -349,7 +357,7 @@ int ft_conv_d(t_conv *conv, int arg)
 		}
 		while (i++ < conv->prec_num)
 			count += ft_putchar_ret('0');
-		count += ft_putnbr_ret(arg);
+		count += ft_putnbr_ret(temp);
 	}
 	return (count);
 }
@@ -357,10 +365,10 @@ int ft_conv_d(t_conv *conv, int arg)
 int	ft_conv_u(t_conv *conv, unsigned int arg)
 {
 	int	count;
-	int	temp;
+	unsigned int	temp;
 	int	i;
 	
-	if (arg == 0 && !(conv->prec_num))
+	if (arg == 0 && (conv->prec) && !(conv->prec_num))
 		return (0);
 	temp = arg;
 	count = 0;
@@ -379,7 +387,6 @@ int	ft_conv_u(t_conv *conv, unsigned int arg)
 	conv->width_num -= conv->prec_num;
 	if (conv->space)
 		conv->width_num -= 1;
-	
 	if (conv->left)
 	{
 		if (conv->space)
@@ -411,6 +418,49 @@ int	ft_conv_u(t_conv *conv, unsigned int arg)
 	return (count);
 }
 
+
+int	ft_conv_x(t_conv *conv, unsigned int arg, char *base16)
+{
+	int	count;
+	unsigned int	temp;
+	int	i;
+
+	temp = arg;
+	count = 0; 
+	i = 1;
+	while (temp / 16)
+	{
+		temp /= 16;
+		i++;
+	}
+	if (conv->width_num < i)
+		conv->width_num = i;
+	conv->width_num -= i;
+
+	if (conv->left)
+	{
+		if (conv->hash)
+		{
+			count += ft_putchar_ret('0');
+			count += ft_putchar_ret('x');
+		}
+		count += ft_puthex_ret(arg, base16);
+		while (conv->width_num--)
+			count += ft_putchar_ret(' ');
+	}
+	else
+	{
+		while (conv->width_num--)
+			count += ft_putchar_ret(' ');
+		if (conv->hash)
+		{
+			count += ft_putchar_ret('0');
+			count += ft_putchar_ret('x');
+		}
+		count += ft_puthex_ret(arg, base16);
+	}
+	return (count);
+}
 
 /*Function to redirect to indiv functions for specifier*/
 int	ft_conv_select(va_list va_ptr, t_conv *conv)

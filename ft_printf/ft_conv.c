@@ -78,6 +78,7 @@ int	ft_conv_p(unsigned long long addr)
 	int	count;
 
 	count = 0;
+
 	count += ft_conv_s("0x");
 	count += ft_conv_x(addr, BASE16_SMALL);
 	return (count);
