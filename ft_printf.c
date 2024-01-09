@@ -6,7 +6,7 @@
 /*   By: mateo <mateo@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 15:12:48 by mateo             #+#    #+#             */
-/*   Updated: 2024/01/09 10:37:49 by mateo            ###   ########.fr       */
+/*   Updated: 2024/01/09 11:52:23 by mateo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,19 +67,6 @@ char	*ft_strchr(const char *s, int c)
 }
 
 /* Misc utility functions*/
-// int	ft_charinstr(char *str, char c)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (str[i])
-// 	{
-// 		if (str[i] == c)
-// 			return (1);
-// 		i++;
-// 	}
-// 	return (0);
-// }
 
 void	ft_safefree(void *ptr)
 {
@@ -104,7 +91,6 @@ int	ft_puthex_ret(unsigned long long c, char *base16)
 		if (write_r < 0)
 			return (-1);
 		count += write_r;
-		// count += ft_puthex_ret(c / 16, base16);
 	}
 	write_r = ft_putchar_ret(base16[c % 16]);
 	if (write_r < 0)
@@ -118,31 +104,52 @@ int	ft_putnbr_ret(long n)
 	char		c;
 	long long	x;
 	int			count;
-	
+	int			write_r;
+
 	count = 0;
 	x = n;
 	if (x < 0)
 	{
-		count += ft_putchar_ret('-');
+		write_r = ft_putchar_ret('-');
+		if (write_r < 0)
+			return (-1);
+		count += write_r;
 		x = -x;
 	}
 	if (x >= 10)
-		count += ft_putnbr_ret(x / 10);
+	{
+		write_r = ft_putnbr_ret(x / 10);
+		if (write_r < 0)
+			return (-1);
+		count += write_r;
+	}
 	c = x % 10 + '0';
-	count += ft_putchar_ret(c);
+	write_r = ft_putchar_ret(c);
+	if (write_r < 0)
+		return (-1);
+	count += write_r;
 	return (count);
 }
 
 int	ft_putunbr_ret(unsigned int n)
 {
-	char				c;
-	int					count;
+	char	c;
+	int		count;
+	int		write_r;	
 	
 	count = 0;
 	if (n >= 10)
-		count += ft_putunbr_ret(n / 10);
+	{
+		write_r = ft_putunbr_ret(n / 10);
+		if (write_r < 0)
+			return (-1);
+		// count += ft_putunbr_ret(n / 10);
+	}
 	c = n % 10 + '0';
-	count += ft_putchar_ret(c);
+	write_r = ft_putchar_ret(c);
+	if (write_r < 0)
+		return (-1);
+	// count += ft_putchar_ret(c);
 	return (count);
 }
 
@@ -281,7 +288,8 @@ int	ft_conv_c(t_conv *conv, int arg)
 int	ft_conv_s(t_conv *conv, char *arg)
 {
 	int pad;
-	
+	int	write_r;
+
 	if (arg && ((conv->prec == 0) || (conv->prec == 1 && conv->prec_num > ft_strlen(arg))))
 		conv->prec_num = ft_strlen(arg);
 	if (!arg && ((conv->prec == 0) || (conv->prec == 1 && conv->prec_num > 6)))
@@ -289,25 +297,36 @@ int	ft_conv_s(t_conv *conv, char *arg)
 	if (conv->width_num < conv->prec_num)
 		conv->width_num = conv->prec_num;
 	pad = conv->width_num - conv->prec_num;
-	if (conv->width_num > conv->prec_num)
+
+	if (conv->left && arg)
 	{
-		if (conv->left && arg)
-			write(1, arg, conv->prec_num);
-		if (conv->left && !arg)
-			write(1, "(null)", conv->prec_num);
-		while (pad--)
-			write(1, " ", 1);
-		if (!(conv->left) && arg)
-			write(1, arg, conv->prec_num);
-		if (!(conv->left) && !arg)
-			write(1, "(null)", conv->prec_num);
+		write_r = write(1, arg, conv->prec_num);
+		if (write_r < 0)
+			return (-1);
 	}
-	else
+	if (conv->left && !arg)
 	{
-		if (arg)
-			write(1, arg, conv->prec_num);
-		else
-			write(1, "(null)", conv->prec_num);
+		write_r = write(1, "(null)", conv->prec_num);
+		if (write_r < 0)
+			return (-1);
+	}
+	while (pad--)
+	{
+		write_r = write(1, " ", 1);
+		if (write_r < 0)
+			return (-1);
+	}
+	if (!(conv->left) && arg)
+	{
+		write_r = write(1, arg, conv->prec_num);
+		if (write_r < 0)
+			return (-1);
+	}
+	if (!(conv->left) && !arg)
+	{
+		write_r = write(1, "(null)", conv->prec_num);
+		if (write_r < 0)
+			return (-1);
 	}
 	return (conv->width_num);
 }
@@ -317,6 +336,7 @@ int	ft_conv_p(t_conv *conv, unsigned long long arg)
 	unsigned long long	temp;
 	int					i;
 	int					pad;
+	int					write_r;
 	
 	temp = arg;
 	i = 3;
@@ -331,15 +351,25 @@ int	ft_conv_p(t_conv *conv, unsigned long long arg)
 	if (!(conv->left))
 	{
 		while (pad--)
-			ft_putchar_ret(' ');
+		{	
+			write_r = ft_putchar_ret(' ');
+			if (write_r < 0)
+				return (-1);
+		}
 	}
-	ft_putchar_ret('0');
-	ft_putchar_ret('x');
-	ft_puthex_ret(arg, BASE16_SMALL);
+	if (write(1, "0x", 2) < 0)
+		return (-1);
+	write_r = ft_puthex_ret(arg, BASE16_SMALL);
+	if (write_r < 0)
+		return (-1);
 	if (conv->left)
 	{
 		while (pad--)
-			ft_putchar_ret(' ');
+		{
+			write_r = ft_putchar_ret(' ');
+			if (write_r < 0)
+				return (-1);
+		}
 	}
 	return (conv->width_num);
 }
@@ -349,6 +379,7 @@ int ft_conv_d(t_conv *conv, int arg)
 	int			pad;
 	long long	temp;
 	int			i;
+	int			write_r;
 
 	temp = arg;
 	i = 1;
@@ -378,40 +409,92 @@ int ft_conv_d(t_conv *conv, int arg)
 	if (conv->left)
 	{
 		if (conv->space)
-			ft_putchar_ret(' ');
+		{
+			write_r = ft_putchar_ret(' ');
+			if (write_r < 0)
+				return (-1);
+		}
 		if (conv->sign && arg >= 0)
-			ft_putchar_ret('+');
+		{
+			write_r = ft_putchar_ret('+');
+			if (write_r < 0)
+				return (-1);
+		}	
 		if (conv->sign && arg < 0)
-			ft_putchar_ret('-');
+		{
+			write_r = ft_putchar_ret('-');
+			if (write_r < 0)
+				return (-1);
+		}
 		while (i++ < conv->prec_num)
-			ft_putchar_ret('0');
+		{
+			write_r = ft_putchar_ret('0');
+			if (write_r < 0)
+				return (-1);
+		}	
 		if (!(conv->prec && !(conv->prec_num) && !arg))
-			ft_putnbr_ret(temp);
+		{
+			write_r = ft_putnbr_ret(temp);
+			if (write_r < 0)
+				return (-1);
+		}	
 		while (pad--)
-			ft_putchar_ret(' ');
+		{
+			write_r = ft_putchar_ret(' ');
+			if (write_r < 0)
+				return (-1);
+		}
 	}
 	else
 	{
 		if (conv->space)
-			ft_putchar_ret(' ');
+		{
+			write_r = ft_putchar_ret(' ');
+			if (write_r < 0)
+				return (-1);
+		}
 		if (!(conv->zero))
 		{
 			while (pad--)
-				ft_putchar_ret(' ');
+			{
+				write_r = ft_putchar_ret(' ');
+				if (write_r < 0)
+					return (-1);
+			}
 		}
 		if (conv->sign && arg >= 0)
-			ft_putchar_ret('+');
+		{
+			write_r = ft_putchar_ret('+');
+			if (write_r < 0)
+				return (-1);
+		}
 		if (conv->sign && arg < 0)
-			ft_putchar_ret('-');
+		{
+			write_r = ft_putchar_ret('-');
+			if (write_r < 0)
+				return (-1);
+		}
 		if (conv->zero)
 		{
-			while (pad--)		
-				ft_putchar_ret('0');
+			while (pad--)
+			{
+				write_r = ft_putchar_ret('0');
+				if (write_r < 0)
+					return (-1);
+			}
 		}
 		while (i++ < conv->prec_num)
-			ft_putchar_ret('0');
+		{
+			write_r = ft_putchar_ret('0');
+			if (write_r < 0)
+				return (-1);
+		}
 		if (!(conv->prec && !(conv->prec_num) && !arg))
-			ft_putnbr_ret(temp);
+		{
+			write_r = ft_putnbr_ret(temp);
+			if (write_r < 0)
+				return (-1);
+		}
 	}
 	return (conv->width_num);
 }
@@ -422,6 +505,7 @@ int	ft_conv_u(t_conv *conv, unsigned int arg)
 	int	pad;
 	unsigned int	temp;
 	int	i;
+	int	write_r;
 	
 	temp = arg;
 	i = 1;
@@ -444,32 +528,68 @@ int	ft_conv_u(t_conv *conv, unsigned int arg)
 	if (conv->left)
 	{
 		if (conv->space)
-			ft_putchar_ret(' ');
+		{
+			write_r = ft_putchar_ret(' ');
+			if (write_r < 0)
+				return (-1);
+		}
 		while (i++ < conv->prec_num)
-			ft_putchar_ret('0');
+		{
+			write_r = ft_putchar_ret('0');
+			if (write_r < 0)
+				return (-1);
+		}
 		if (!(conv->prec && !(conv->prec_num) && !arg))
-			ft_putunbr_ret(arg);
+		{
+			write_r = ft_putunbr_ret(arg);
+			if (write_r < 0)
+				return (-1);
+		}
 		while (pad--)
-			ft_putchar_ret(' ');
+		{
+			write_r = ft_putchar_ret(' ');
+			if (write_r < 0)
+				return (-1);
+		}
 	}
 	else
 	{
 		if (conv->space)
-			ft_putchar_ret(' ');
+		{
+			 write_r = ft_putchar_ret(' ');
+			 if (write_r < 0)
+				return (-1);
+		}
 		if (!(conv->zero))
 		{
 			while (pad--)
-				ft_putchar_ret(' ');
+			{
+				write_r = ft_putchar_ret(' ');
+				if (write_r < 0)
+					return (-1);
+			}
 		}
 		if (conv->zero)
 		{
 			while (pad--)		
-				ft_putchar_ret('0');
+			{
+				write_r = ft_putchar_ret('0');
+				if (write_r < 0)
+					return (-1);
+			}
 		}
 		while (i++ < conv->prec_num)
-			ft_putchar_ret('0');
+		{
+			write_r = ft_putchar_ret('0');
+			if (write_r < 0)
+				return (-1);
+		}
 		if (!(conv->prec && !(conv->prec_num) && !arg))
-			ft_putunbr_ret(arg);
+		{
+			write_r = ft_putunbr_ret(arg);
+			if (write_r < 0)
+				return (-1);
+		}
 	}
 	return (conv->width_num);
 }
@@ -479,6 +599,7 @@ int	ft_conv_x(t_conv *conv, unsigned int arg, char *base16)
 	int	pad;
 	unsigned int	temp;
 	int	i;
+	int	write_r;
 
 	temp = arg;
 	i = 1;
@@ -504,33 +625,67 @@ int	ft_conv_x(t_conv *conv, unsigned int arg, char *base16)
 	{
 		if (conv->hash)
 		{
-			ft_putchar_ret('0');
-			ft_putchar_ret(conv->spec);
+			write_r = ft_putchar_ret('0');
+			if (write_r < 0)
+				return (-1);
+			write_r = ft_putchar_ret(conv->spec);
+			if (write_r < 0)
+				return (-1);
 		}
 		while (i++ < conv->prec_num)
-			ft_putchar_ret('0');
+		{
+			write_r = ft_putchar_ret('0');
+			if (write_r < 0)
+				return (-1);
+		}
 		if (!(conv->prec && !(conv->prec_num) && !arg))
-			ft_puthex_ret(arg, base16);
+		{
+			write_r = ft_puthex_ret(arg, base16);
+			if (write_r < 0)
+				return (-1);
+		}
 		while (pad--)
-			ft_putchar_ret(' ');
+		{
+			write_r = ft_putchar_ret(' ');
+			if (write_r < 0)
+				return (-1);
+		}
 	}
 	else
 	{
 		while (!(conv->zero) && pad--)
 		{
-			ft_putchar_ret(' ');
+			write_r = ft_putchar_ret(' ');
+			if (write_r < 0)
+				return (-1);
 		}
 		if (conv->hash)
 		{
-			ft_putchar_ret('0');
-			ft_putchar_ret(conv->spec);
+			write_r = ft_putchar_ret('0');
+			if (write_r < 0)
+				return (-1);
+			write_r = ft_putchar_ret(conv->spec);
+			if (write_r < 0)
+				return (-1);
 		}
 		while (conv->zero && pad--)
-			ft_putchar_ret('0');
+		{
+			write_r = ft_putchar_ret('0');
+			if (write_r < 0)
+				return (-1);
+		}
 		while (i++ < conv->prec_num)
-			ft_putchar_ret('0');
+		{
+			write_r = ft_putchar_ret('0');
+			if (write_r < 0)
+				return (-1);
+		}
 		if (!(conv->prec && !(conv->prec_num) && !arg))
-			ft_puthex_ret(arg, base16);
+		{
+			write_r = ft_puthex_ret(arg, base16);
+			if (write_r < 0)
+				return (-1);
+		}
 	}
 	return (conv->width_num);
 }
