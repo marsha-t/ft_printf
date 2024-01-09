@@ -1,21 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_printf_bonus.h                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mateo <mateo@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/08 11:30:05 by mateo             #+#    #+#             */
-/*   Updated: 2024/01/08 11:30:05 by mateo            ###   ########.fr       */
+/*   Created: 2024/01/08 11:29:57 by mateo             #+#    #+#             */
+/*   Updated: 2024/01/08 11:29:57 by mateo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
+#ifndef FT_PRINTF_BONUS_H
 
-# define FT_PRINTF_H
+# define FT_PRINTF_BONUS_H
 
 # include <unistd.h>
 # include <stdarg.h>
+# include <stdlib.h>
 
 # define CONVERSIONS "cspdiuxX%"
 # define FLAGS "-+ #0"
@@ -24,15 +25,20 @@
 # define BASE16_SMALL "0123456789abcdef"
 # define BASE16_LARGE "0123456789ABCDEF"
 
-int	ft_strlen(char *str); // replaced by libft version?
-int	ft_conv_c(int c);
-int	ft_charinstr(char c, char *str);
-int	ft_conv_s(char *str);
-int	ft_conv_d(int n);
-int	ft_conv_u(unsigned int n);
-int	ft_conv_x(unsigned long long c, char *base16);
-int	ft_conv_p(unsigned long long addr);
-int	ft_printconv(const char *str, va_list va_ptr);
+typedef struct s_conv
+{
+	int		left;
+	int		sign;
+	int		space;
+	int		hash;
+	int		zero;
+	int		width;
+	int		width_num;
+	int		prec;
+	int		prec_num;
+	char	spec;
+}				t_conv;
+
 int	ft_printf(const char *str, ...);
 
 #endif

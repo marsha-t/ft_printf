@@ -12,19 +12,17 @@
 
 #include "ft_printf.h"
 
-int	ft_conv_s(char *str)
+static int	ft_conv2_d(long long *xp)
 {
-	ssize_t	write_ret;
+	int	temp;
 
-	if (str)
+	if (*xp < 0)
 	{
-		write_ret = write(1, str, ft_strlen(str));
-		if (write_ret == -1)
-			return (-1);
-		return (ft_strlen(str));
+		*xp *= -1;
+		temp = ft_conv_c('-');
+		return (temp);
 	}
-	else
-		return (ft_conv_s("(null)"));
+	return (0);
 }
 
 int	ft_conv_d(int n)
@@ -33,16 +31,10 @@ int	ft_conv_d(int n)
 	int			count;
 	int			temp;
 
-	count = 0;
 	x = n;
-	if (x < 0)
-	{
-		temp = ft_conv_c('-');
-		if (temp < 0)
-			return (-1);
-		count += temp;
-		x = -x;
-	}
+	count = ft_conv2_d(&x);
+	if (count < 0)
+		return (-1);
 	if (x >= 10)
 	{
 		temp = ft_conv_d(x / 10);
@@ -93,23 +85,6 @@ int	ft_conv_x(unsigned long long c, char *base16)
 		count += temp;
 	}
 	temp = ft_conv_c(base16[c % 16]);
-	if (temp < 0)
-		return (-1);
-	count += temp;
-	return (count);
-}
-
-int	ft_conv_p(unsigned long long addr)
-{
-	int	count;
-	int	temp;
-
-	count = 0;
-	temp = ft_conv_s("0x");
-	if (temp < 0)
-		return (-1);
-	count += temp;
-	temp = ft_conv_x(addr, BASE16_SMALL);
 	if (temp < 0)
 		return (-1);
 	count += temp;
