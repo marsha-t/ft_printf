@@ -6,7 +6,7 @@
 /*   By: mateo <mateo@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 15:12:48 by mateo             #+#    #+#             */
-/*   Updated: 2024/01/09 11:52:23 by mateo            ###   ########.fr       */
+/*   Updated: 2024/01/09 12:36:02 by mateo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,13 +143,11 @@ int	ft_putunbr_ret(unsigned int n)
 		write_r = ft_putunbr_ret(n / 10);
 		if (write_r < 0)
 			return (-1);
-		// count += ft_putunbr_ret(n / 10);
 	}
 	c = n % 10 + '0';
 	write_r = ft_putchar_ret(c);
 	if (write_r < 0)
 		return (-1);
-	// count += ft_putchar_ret(c);
 	return (count);
 }
 
