@@ -14,20 +14,13 @@
 #include <stdio.h>
 #include <limits.h>
 
-void	ft_print_conv(t_conv *conv)
-{
-	printf("left: %d\nsign: %d\nspace: %d\nhash: %d\nzero: %d\nwidth: %d\nwidth_num: %d\nprec: %d\nprec_num: %d\nspec: %d\n", \
-	conv->left, conv->sign, conv->space, conv->hash, conv->zero, conv->width, conv->width_num, conv->prec, conv->prec_num, conv->spec);
-}
-
 int	main(void)
 {
-	char *ptr = "abc";
-	// ft_printf(".%5%.\n");
-	// printf(".%5%.\n");
+	ft_printf(".%c, %s, %d.\n", 'a', "abc", 42);
+	printf(".%c, %s, %d.\n", 'a', "abc", 42);
 
-	printf("%d\n", ft_printf(".%1.d.\n", 0));
-	printf("%d\n",    printf(".%1.d.\n", 0));
+	// char *ptr = "abc";
+	// ft_printf(".%010%.\n");
 
 	// printf("%d\n", ft_printf("%d, %d, %d, %d, %d, %d, %d, %d", 0, 5, -1, -10, 100, -1862, INT_MIN, INT_MAX));
 	// printf("%d\n",    printf("%d, %d, %d, %d, %d, %d, %d, %d", 0, 5, -1, -10, 100, -1862, INT_MIN, INT_MAX));

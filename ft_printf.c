@@ -24,7 +24,7 @@ int	ft_strlen(const char *s)
 }
 
 /* libft.a functions*/
-int	ft_atoi(const char *str) 
+int	ft_atoi(const char *str)
 {
 	long long	r;
 	long long	x;
@@ -74,6 +74,7 @@ void	ft_safefree(void *ptr)
 	ptr = 0;
 }
 /*Printing functions*/
+
 int	ft_putchar_ret(int c)
 {
 	return (write(1, &c, 1));
@@ -94,9 +95,19 @@ int	ft_puthex_ret(unsigned long long c, char *base16)
 	}
 	write_r = ft_putchar_ret(base16[c % 16]);
 	if (write_r < 0)
-			return (-1);
+		return (-1);
 	count += write_r;
 	return (count);
+}
+
+int ft_putnbr_ret_neg(long long *x)
+{
+	if (x < 0)
+	{
+		*x *= -1;
+		return (ft_putchar_ret('-'));
+	}
+	return (0);
 }
 
 int	ft_putnbr_ret(long n)
@@ -108,14 +119,10 @@ int	ft_putnbr_ret(long n)
 
 	count = 0;
 	x = n;
-	if (x < 0)
-	{
-		write_r = ft_putchar_ret('-');
-		if (write_r < 0)
-			return (-1);
-		count += write_r;
-		x = -x;
-	}
+	write_r = ft_putnbr_ret_neg(&x);
+	if (write_r < 0)
+		return (-1);
+	count += write_r;
 	if (x >= 10)
 	{
 		write_r = ft_putnbr_ret(x / 10);
@@ -131,12 +138,44 @@ int	ft_putnbr_ret(long n)
 	return (count);
 }
 
+// int	ft_putnbr_ret(long n)
+// {
+// 	char		c;
+// 	long long	x;
+// 	int			count;
+// 	int			write_r;
+
+// 	count = 0;
+// 	x = n;
+// 	if (x < 0)
+// 	{
+// 		write_r = ft_putchar_ret('-');
+// 		if (write_r < 0)
+// 			return (-1);
+// 		count += write_r;
+// 		x = -x;
+// 	}
+// 	if (x >= 10)
+// 	{
+// 		write_r = ft_putnbr_ret(x / 10);
+// 		if (write_r < 0)
+// 			return (-1);
+// 		count += write_r;
+// 	}
+// 	c = x % 10 + '0';
+// 	write_r = ft_putchar_ret(c);
+// 	if (write_r < 0)
+// 		return (-1);
+// 	count += write_r;
+// 	return (count);
+// }
+
 int	ft_putunbr_ret(unsigned int n)
 {
 	char	c;
 	int		count;
 	int		write_r;	
-	
+
 	count = 0;
 	if (n >= 10)
 	{
@@ -185,7 +224,7 @@ void	ft_tidyconv(t_conv *conv)
 const char	*ft_extract_conv(const char *str, t_conv *conv)
 {
 	ft_initconv(conv);
-	while (ft_strchr(FLAGS, *str))	
+	while (ft_strchr(FLAGS, *str))
 	{
 		if (*str == '-')
 			conv->left = 1;
@@ -193,11 +232,11 @@ const char	*ft_extract_conv(const char *str, t_conv *conv)
 			conv->sign = 1;
 		if (*str == ' ')
 			conv->space = 1;
-		if (*str == '#')			
+		if (*str == '#')
 			conv->hash = 1;
 		if (*str == '0')
 			conv->zero = 1;
-		str++;	
+		str++;
 	}
 	if (ft_strchr(WIDTH, *str))
 	{
@@ -212,7 +251,7 @@ const char	*ft_extract_conv(const char *str, t_conv *conv)
 		conv->prec_num = ft_atoi(++str);
 	}
 	while (ft_strchr(PRECISION, *str))
-		str++;	
+		str++;
 	if (ft_strchr(CONVERSIONS, *str))
 	{
 		conv->spec = *str;
@@ -232,8 +271,9 @@ int	ft_conv_pct(t_conv *conv)
 
 	if (conv->width == 0)
 		conv->width_num = 1;
-	pad = conv->width_num;	
-	if (conv->left == 1)
+	pad = conv->width_num;
+	// ft_print_conv(conv);
+	if (conv->left)
 	{
 		write_r = write(1, "%", 1);
 		if (write_r < 0)
@@ -241,9 +281,18 @@ int	ft_conv_pct(t_conv *conv)
 	}
 	while (--pad)
 	{
-		write_r = write(1, " ", 1);
-		if (write_r < 0)
-			return (-1);
+		if (conv->zero)
+		{
+			write_r = write(1, "0", 1);
+			if (write_r < 0)
+				return (-1);
+		}
+		else
+		{
+			write_r = write(1, " ", 1);
+			if (write_r < 0)
+				return (-1);
+		}			
 	}
 	if (conv->left == 0)
 	{
