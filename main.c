@@ -23,6 +23,7 @@
 // 	conv->left, conv->sign, conv->space, conv->hash, conv->zero, conv->width, conv->width_num, conv->prec, conv->prec_num, conv->spec);
 // }
 
+<<<<<<< HEAD
 
 int	main(void)
 {
@@ -34,6 +35,15 @@ int	main(void)
 	// == \
 	// ft_printf("%c\n" , 0) \
 	// );
+=======
+int	main(void)
+{
+	ft_printf(".%c, %s, %d.\n", 'a', "abc", 42);
+	printf(".%c, %s, %d.\n", 'a', "abc", 42);
+
+	// char *ptr = "abc";
+	// ft_printf(".%010%.\n");
+>>>>>>> fd2c38754f565a448e34baec3cbc763e215f6ae9
 
 	// %168c
 	// %026.51%
