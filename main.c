@@ -13,22 +13,48 @@
 #include "ft_printf.h"
 #include <stdio.h>
 #include <limits.h>
+#include <assert.h>
 
-void	ft_print_conv(t_conv *conv)
-{
-	printf("left: %d\nsign: %d\nspace: %d\nhash: %d\nzero: %d\nwidth: %d\nwidth_num: %d\nprec: %d\nprec_num: %d\nspec: %d\n", \
-	conv->left, conv->sign, conv->space, conv->hash, conv->zero, conv->width, conv->width_num, conv->prec, conv->prec_num, conv->spec);
-}
+
+// #include <stdio.h>
+// void	ft_print_conv(t_conv *conv)
+// {
+// 	printf("left: %d\nsign: %d\nspace: %d\nhash: %d\nzero: %d\nwidth: %d\nwidth_num: %d\nprec: %d\nprec_num: %d\nspec: %d\n", \
+// 	conv->left, conv->sign, conv->space, conv->hash, conv->zero, conv->width, conv->width_num, conv->prec, conv->prec_num, conv->spec);
+// }
+
 
 int	main(void)
 {
-	char *ptr = "abc";
-	// ft_printf(".%5%.\n");
-	// printf(".%5%.\n");
+	
+	ft_printf("%c, %c", 'a');
 
-	printf("%d\n", ft_printf(".%1.d.\n", 0));
-	printf("%d\n",    printf(".%1.d.\n", 0));
+	// assert ( \
+	// printf("%c\n" , 0) \
+	// == \
+	// ft_printf("%c\n" , 0) \
+	// );
 
+	// %168c
+	// %026.51%
+	// %0125.119X\n" ,1102840003u,-50,-17,3721437512u);
+	
+	// printf("%-70.193x%-140c%168c%026.51%%0125.119X\n" ,1102840003u,-50,-17,3721437512u);
+	// ft_printf("%-70.193x%-140c%168c%026.51%%0125.119X\n" ,1102840003u,-50,-17,3721437512u);
+
+
+	
+
+	// printf("%4.p\n", NULL);
+	// ft_printf("%4.p\n", NULL);
+
+	// printf("%p\n", NULL);
+	// ft_printf("%p\n", NULL);
+
+	// ft_printf("%-2lc", (char)142);
+	// printf("%-2lc", (char)142);
+	// char *ptr = "abc";
+	
 	// printf("%d\n", ft_printf("%d, %d, %d, %d, %d, %d, %d, %d", 0, 5, -1, -10, 100, -1862, INT_MIN, INT_MAX));
 	// printf("%d\n",    printf("%d, %d, %d, %d, %d, %d, %d, %d", 0, 5, -1, -10, 100, -1862, INT_MIN, INT_MAX));
 	
