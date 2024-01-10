@@ -6,7 +6,7 @@
 /*   By: mateo <mateo@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 11:39:19 by mateo             #+#    #+#             */
-/*   Updated: 2024/01/10 12:12:03 by mateo            ###   ########.fr       */
+/*   Updated: 2024/01/10 18:02:44 by mateo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ void	ft_initconv(t_conv *conv)
 	conv->prec = 0;
 	conv->prec_n = 0;
 	conv->spec = 0;
+	conv->i = 0;
+	conv->pad = 0;
 }
 
 void	ft_tidyconv(t_conv *conv)
@@ -41,9 +43,8 @@ void	ft_tidyconv(t_conv *conv)
 		conv->space = 0;
 }
 
-const char	*ft_extract_conv(const char *str, t_conv *conv)
+const char	*ft_extract_conv_f(const char *str, t_conv *conv)
 {
-	ft_initconv(conv);
 	while (ft_strchr(FLAGS, *str))
 	{
 		if (*str == '-')
@@ -58,6 +59,11 @@ const char	*ft_extract_conv(const char *str, t_conv *conv)
 			conv->zero = 1;
 		str++;
 	}
+	return (str);
+}
+
+const char	*ft_extract_conv_widprec(const char *str, t_conv *conv)
+{
 	if (ft_strchr(WIDTH, *str))
 	{
 		conv->width = 1;
@@ -72,6 +78,14 @@ const char	*ft_extract_conv(const char *str, t_conv *conv)
 	}
 	while (ft_strchr(PRECISION, *str))
 		str++;
+	return (str);
+}
+
+const char	*ft_extract_conv(const char *str, t_conv *conv)
+{
+	ft_initconv(conv);
+	str = ft_extract_conv_f(str, conv);
+	str = ft_extract_conv_widprec(str, conv);
 	if (ft_strchr(CONVERSIONS, *str))
 	{
 		conv->spec = *str;

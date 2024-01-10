@@ -6,7 +6,7 @@
 /*   By: mateo <mateo@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 11:56:20 by mateo             #+#    #+#             */
-/*   Updated: 2024/01/10 15:12:54 by mateo            ###   ########.fr       */
+/*   Updated: 2024/01/10 17:31:17 by mateo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,55 +25,34 @@ int	ft_plen(unsigned long long arg)
 	return (i);
 }
 
-int	ft_tidyconv_p(t_conv **convp, unsigned long long arg)
+void	ft_tidyconv_p(t_conv *conv, unsigned long long arg)
 {
-	int	i;
-
-	i = ft_plen(arg);
-	if (!arg && ((*convp)->prec) && !((*convp)->prec_n))
-		i = 0;
-	if ((*convp)->prec_n < i)
-		(*convp)->prec_n = i;
-	if ((*convp)->width_n < (*convp)->prec_n + 2)
-		(*convp)->width_n = (*convp)->prec_n + 2;
-	return (i);
-}
-
-int	ft_conv_p_stub(t_conv *conv, unsigned long long arg, int i)
-{
-	if (write(1, "0x", 2) < 0)
-		return (-1);
-	while (i++ < conv->prec_n)
-	{
-		if (ft_putc_r('0') < 0)
-			return (-1);
-	}
-	if (!(conv->prec && !(conv->prec_n) && !arg))
-	{
-		if (ft_puthex_r(arg, BASE16_SMALL) < 0)
-			return (-1);
-	}
-	return (0);
+	conv->i = ft_plen(arg);
+	if (!arg && (conv->prec) && !(conv->prec_n))
+		conv->i = 0;
+	if (conv->prec_n < conv->i)
+		conv->prec_n = conv->i;
+	if (conv->width_n < conv->prec_n + 2)
+		conv->width_n = conv->prec_n + 2;
+	conv->pad = conv->width_n - conv->prec_n - 2;
 }
 
 int	ft_conv_p(t_conv *conv, unsigned long long arg)
 {
-	int					i;
-	int					pad;
-
-	i = ft_tidyconv_p(&conv, arg);
-	pad = conv->width_n - conv->prec_n - 2;
-	while (!(conv->left) && pad--)
-	{
+	ft_tidyconv_p(conv, arg);
+	while (!(conv->left) && (conv->pad)--)
 		if (ft_putc_r(' ') < 0)
 			return (-1);
-	}
-	if (ft_conv_p_stub(conv, arg, i) < 0)
+	if (write(1, "0x", 2) < 0)
 		return (-1);
-	while (conv->left && pad--)
-	{
+	while ((conv->i)++ < conv->prec_n)
+		if (ft_putc_r('0') < 0)
+			return (-1);
+	if (!(conv->prec && !(conv->prec_n) && !arg))
+		if (ft_puthex_r(arg, BASE16_SMALL) < 0)
+			return (-1);
+	while (conv->left && (conv->pad)--)
 		if (ft_putc_r(' ') < 0)
 			return (-1);
-	}
 	return (conv->width_n);
 }
