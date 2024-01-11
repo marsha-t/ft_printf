@@ -6,7 +6,7 @@
 /*   By: mateo <mateo@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 11:56:20 by mateo             #+#    #+#             */
-/*   Updated: 2024/01/10 17:24:05 by mateo            ###   ########.fr       */
+/*   Updated: 2024/01/11 09:45:04 by mateo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	ft_conv_s(t_conv *conv, char *arg)
 {
 	if (!arg)
 		arg = NULLSTR;
-	if (!(conv->prec) || (conv->prec && conv->prec_n > ft_strlen(arg)))
+	if (!(conv->prec) || (conv->prec && conv->prec_n > (int) ft_strlen(arg)))
 		conv->prec_n = ft_strlen(arg);
 	if (conv->width_n < conv->prec_n)
 		conv->width_n = conv->prec_n;
