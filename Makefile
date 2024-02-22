@@ -4,7 +4,6 @@ LIBFT_DIR = libft
 CFLAGS = -Wall -Wextra -Werror
 CFILES = ft_extract_conv.c ft_put.c ft_printf.c \
 ft_conv_cs.c ft_conv_p.c ft_conv_di.c ft_conv_ux.c 
-# ft_libft.c 
 OFILES = ${CFILES:.c=.o}
 
 all: $(NAME)
